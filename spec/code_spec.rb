@@ -2,7 +2,12 @@ require 'spec_helper'
 require 'codebreaker/code'
 
 describe Codebreaker::Code do
-  comparison_with = lambda { |code| Codebreaker::Code.new("1234").compare_to(code) }
+  Code = Codebreaker::Code
+  comparison_with = lambda { |code| Code.new("1234").compare_to(code) }
+
+  it "passes constructor argument to value" do
+    expect(Code.new("1234").value).to eq "1234"
+  end
 
   context "when nothing guessed" do
     it { expect(comparison_with["5656"]).to eq "" }

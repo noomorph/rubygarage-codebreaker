@@ -1,29 +1,35 @@
 require "codebreaker/code"
 
-class Game
-  attr_reader :chosen, :attempts_left
+module Codebreaker
+  class Game
+    ERR_IS_OVER = "Game is over"
 
-  def initialize(randomizer, validator)
-    @randomizer, @validator = randomizer, validator
-    reset
-  end
+    attr_reader :chosen, :attempts_left
 
-  def reset
-    @chosen = Codebreaker::Code.new(@randomizer.generate)
-    @attempts_left = 4
-  end
+    def initialize(randomizer, validator)
+      @randomizer, @validator = randomizer, validator
+      reset
+    end
 
-  def guess(code)
-    @validator.validate! code
-    decrease_attempts_left
-    @chosen.compare_to code
-  end
+    def reset
+      @chosen = Code.new(@randomizer.generate)
+      @attempts_left = 4
+    end
 
-  private
+    def guess(code)
+      @validator.validate! code
+      update_attempts_left!
+      @chosen.compare_to code
+    end
 
-  def decrease_attempts_left
-    if @attempts_left > 0
-      @attempts_left -= 1
+    private
+
+    def update_attempts_left!
+      if @attempts_left > 0
+        @attempts_left -= 1
+      else
+        raise ERR_IS_OVER
+      end
     end
   end
 end
